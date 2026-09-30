@@ -1,0 +1,140 @@
+<div class="page-container">
+ 
+  <app-page-header [titleInput]="'Listagem de usuarios'" [isGrid]="true" />
+
+  <div class="user-list card">
+    <div class="list-toolbar">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Pesquisar</mat-label>
+
+        <input
+          matInput
+          type="text"
+          placeholder="Nome, usuário ou e-mail"
+          [(ngModel)]="search"
+          (keyup.enter)="filterUsers()"
+        />
+
+        @if (search) {
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            class="clear-button"
+            aria-label="Limpar pesquisa"
+            matTooltip="Limpar pesquisa"
+            (click)="clearSearch()"
+          >
+            <mat-icon>backspace</mat-icon>
+          </button>
+        } @else {
+          <mat-icon matSuffix>search</mat-icon>
+        }
+      </mat-form-field>
+
+      <div class="user-stats">
+        <div class="user-stat total">
+          <mat-icon>people</mat-icon>
+
+          <div>
+            <span>Total de usuários</span>
+            <strong>{{ totalUsers }}</strong>
+          </div>
+        </div>
+
+        <div class="user-stat active">
+          <mat-icon>check_circle</mat-icon>
+
+          <div>
+            <span>Usuários ativos</span>
+            <strong>{{ activeUsers }}</strong>
+          </div>
+        </div>
+
+        <div class="user-stat inactive">
+          <mat-icon>cancel</mat-icon>
+
+          <div>
+            <span>Usuários inativos</span>
+            <strong>{{ inactiveUsers }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <button mat-flat-button color="primary" type="button" (click)="newUser()" *appHasRole="['USER_MANAGE']">
+        <mat-icon>add</mat-icon>
+        Novo usuário
+      </button>
+    </div>
+
+    <div class="table-container">
+      <table mat-table [dataSource]="filteredUsers()">
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef>Usuário</th>
+
+          <td mat-cell *matCellDef="let user">
+            {{ user.username }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+
+          <td mat-cell *matCellDef="let user">{{ user.firstName }} {{ user.lastName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>E-mail</th>
+
+          <td mat-cell *matCellDef="let user">
+            {{ user.email || '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="enabled">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+
+          <td mat-cell *matCellDef="let user">
+            @if (user.enabled) {
+              <span class="status active"> Ativo </span>
+            } @else {
+              <span class="status inactive"> Inativo </span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="actions-column">Ações</th>
+
+          <td mat-cell *matCellDef="let user" class="actions-column">
+            <div class="actions">
+              <button mat-icon-button matTooltip="Editar" type="button" (click)="editUser(user.id)" *appHasRole="['USER_MANAGE']">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button
+                mat-icon-button
+                matTooltip="Excluir"
+                type="button"
+                (click)="confirmaticonDeleteUser(user.id, user.username)"
+                *appHasRole="['USER_MANAGE']"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
+            Nenhum usuário encontrado.
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

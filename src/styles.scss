@@ -1,0 +1,40 @@
+/* You can add global styles to this file, and also import other style files */
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #dc2626;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+
+  .mdc-snackbar__label {
+    white-space: pre-line !important;
+  }
+}
+
+.warning-snackbar {
+  --mdc-snackbar-container-color: #f59e0b;
+
+  .mdc-snackbar__label {
+    color: #1f2937 !important;
+    white-space: pre-line !important;
+  }
+
+  .mat-mdc-snack-bar-label {
+    color: #1f2937 !important;
+  }
+
+  .mdc-snackbar__surface {
+    background-color: #f59e0b !important;
+  }
+
+  .mat-mdc-button {
+    color: #1f2937 !important;
+  }
+}
+
+.warning-snackbar .mdc-snackbar__surface {
+  background-color: #f59e0b !important;
+}
+
+.error-snackbar .mdc-snackbar__surface {
+  background-color: #dc2626 !important;
+}
