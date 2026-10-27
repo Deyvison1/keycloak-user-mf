@@ -8,3 +8,4 @@ export const environment = {
     urlAccount: 'https://auth.supreme-network.site/realms/MY_KEYCLOAK/account/',
   },
 };
+
