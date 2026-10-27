@@ -1,0 +1,20 @@
+services:
+  app-keycloak-integration:
+    build: .
+    container_name: app-keycloak-integration
+    restart: unless-stopped
+
+    networks:
+      - my-infra-docker
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app-keycloak-integration.rule=Host(`api-keycloak-integration.supreme-network.site`)"
+      - "traefik.http.routers.app-keycloak-integration.entrypoints=websecure"
+      - "traefik.http.routers.app-keycloak-integration.tls=true"
+      - "traefik.http.routers.app-keycloak-integration.tls.certresolver=letsencrypt"
+      - "traefik.http.services.app-keycloak-integration.loadbalancer.server.port=80"
+
+networks:
+  my-infra-docker:
+    external: true
