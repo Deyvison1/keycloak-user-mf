@@ -25,4 +25,4 @@ COPY --from=build /app/dist/keycloak-user-mf/browser ./dist
 
 EXPOSE 80
 
-CMD ["serve", "-s", "dist", "-l", "80", "--cors"]
+CMD ["serve", "-s", "dist", "-l", "80"]

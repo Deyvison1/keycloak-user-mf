@@ -15,6 +15,13 @@ services:
       - "traefik.http.routers.app-keycloak-integration.tls.certresolver=letsencrypt"
       - "traefik.http.services.app-keycloak-integration.loadbalancer.server.port=80"
 
+      # CORS restrito à aplicação principal
+      - "traefik.http.middlewares.keycloak-cors.headers.accesscontrolalloworiginlist=https://app.supreme-network.site"
+      - "traefik.http.middlewares.keycloak-cors.headers.accesscontrolallowmethods=GET,OPTIONS"
+      - "traefik.http.middlewares.keycloak-cors.headers.accesscontrolallowheaders=Authorization,Content-Type"
+      - "traefik.http.middlewares.keycloak-cors.headers.accesscontrolallowcredentials=true"
+      - "traefik.http.routers.app-keycloak-integration.middlewares=keycloak-cors"
+
 networks:
   my-infra-docker:
     external: true
