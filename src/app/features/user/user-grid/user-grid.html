@@ -117,6 +117,7 @@
                 matTooltip="Excluir"
                 type="button"
                 (click)="confirmaticonDeleteUser(user.id, user.username)"
+                [disabled]="user.canDelete"
                 *appHasRole="['USER_MANAGE']"
               >
                 <mat-icon>delete</mat-icon>
