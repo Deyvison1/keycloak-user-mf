@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseHttpService } from './base.service';
 import { environment } from '../../../environments/environment';
-import { ApiResponseDTO } from '../../shared/dto/response/api-response.dto';
+import { ApiResponseDTO, PageResponseDTO } from '../../shared/dto/response/api-response.dto';
 import { UserResponseDTO } from '../../shared/dto/response/user-response.dto';
 import { UserRequestDTO } from '../../shared/dto/request/user-request.dto';
 
@@ -13,8 +13,10 @@ import { UserRequestDTO } from '../../shared/dto/request/user-request.dto';
 export class UserService extends BaseHttpService {
   private readonly urlApiUser = environment.apiUrl.concat('/users');
 
-  getAllUser(): Observable<ApiResponseDTO<UserResponseDTO[]>> {
-    return this.getFindAll<UserResponseDTO[]>(this.urlApiUser);
+  getAllUser(page: number = 0, size: number = 10): Observable<PageResponseDTO<UserResponseDTO[]>> {
+    const params = `?page=${page}&size=${size}`;
+
+    return this.getFindAllPageable<UserResponseDTO[]>(this.urlApiUser.concat(params));
   }
 
   findById(id: string): Observable<ApiResponseDTO<UserResponseDTO>> {

@@ -31,6 +31,10 @@
             "development": {
               "target": "keycloak-user-mf:esbuild:development",
               "dev": true
+            },
+            "dev": {
+              "target": "keycloak-user-mf:esbuild:dev",
+              "dev": true
             }
           },
           "defaultConfiguration": "production"
@@ -45,6 +49,16 @@
             "dev": true,
             "devServer": true,
             "port": 0
+          },
+          "configurations": {
+            "development": {
+              "target": "keycloak-user-mf:serve-original:development",
+              "dev": true
+            },
+            "dev": {
+              "target": "keycloak-user-mf:serve-original:dev",
+              "dev": true
+            }
           }
         },
         "test": {
@@ -85,6 +99,17 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "dev": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -97,6 +122,9 @@
             },
             "development": {
               "buildTarget": "keycloak-user-mf:esbuild:development"
+            },
+            "dev": {
+              "buildTarget": "keycloak-user-mf:esbuild:dev"
             }
           },
           "defaultConfiguration": "development",

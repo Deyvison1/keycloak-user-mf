@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://api-keycloak-integration.supreme-network.site/api/v1',
+  apiUrl: 'http://localhost:8085/api/v1',
   keycloakConfig: {
     url: 'https://auth.supreme-network.site',
     realm: 'MY_KEYCLOAK',

@@ -1,37 +1,27 @@
 import { Component, OnInit, Type, inject, signal } from '@angular/core';
-
 import { FormsModule } from '@angular/forms';
-
 import { Router } from '@angular/router';
-
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { MatButtonModule } from '@angular/material/button';
-
 import { MatDialog } from '@angular/material/dialog';
-
 import { MatFormFieldModule } from '@angular/material/form-field';
-
 import { MatIconModule } from '@angular/material/icon';
-
 import { MatInputModule } from '@angular/material/input';
-
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { loadRemoteModule } from '@angular-architects/native-federation';
 
 import { UserService } from '../../../core/service/user.service';
-
 import { NotificationService } from '../../../core/service/notification.service';
 
 import { UserResponseDTO } from '../../../shared/dto/response/user-response.dto';
-
-import { ApiResponseDTO } from '../../../shared/dto/response/api-response.dto';
+import { ApiResponseDTO, PageResponseDTO } from '../../../shared/dto/response/api-response.dto';
+import { ConfirmDialogData } from '../../../shared/dto/confirm-dialog-data.dto';
 
 import { PageHeader, HasRoleDirective } from '@supremenetwork/ui';
-import { ConfirmDialogData } from '../../../shared/dto/confirm-dialog-data.dto';
 
 @Component({
   selector: 'app-user-grid',
@@ -44,6 +34,7 @@ import { ConfirmDialogData } from '../../../shared/dto/confirm-dialog-data.dto';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatPaginatorModule,
     MatTableModule,
     MatTooltipModule,
   ],
@@ -57,7 +48,6 @@ export class UserGrid implements OnInit {
   private readonly notificationService = inject(NotificationService);
 
   users = signal<UserResponseDTO[]>([]);
-
   filteredUsers = signal<UserResponseDTO[]>([]);
 
   pageHeaderComponent = signal<Type<unknown> | null>(null);
@@ -67,28 +57,37 @@ export class UserGrid implements OnInit {
   displayedColumns: string[] = ['username', 'name', 'email', 'enabled', 'actions'];
 
   totalUsers = 0;
-
   activeUsers = 0;
-
   inactiveUsers = 0;
+
+  page = 0;
+  size = 10;
 
   ngOnInit(): void {
     this.findAll();
   }
- 
+
   findAll(): void {
-    this.userService.getAllUser().subscribe({
-      next: (response: ApiResponseDTO<UserResponseDTO[]>) => {
+    this.userService.getAllUser(this.page, this.size).subscribe({
+      next: (response: PageResponseDTO<UserResponseDTO[]>) => {
         const users = response.data ?? [];
 
         this.users.set(users);
-
-        this.filteredUsers.set([...users]);
-
+        this.totalUsers = response.total;
         this.updateStats();
         this.filterUsers();
       },
+      error: (err: HttpErrorResponse) => {
+        this.notificationService.error(err);
+      },
     });
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.page = event.pageIndex;
+    this.size = event.pageSize;
+
+    this.findAll();
   }
 
   filterUsers(): void {
@@ -114,7 +113,6 @@ export class UserGrid implements OnInit {
 
   clearSearch(): void {
     this.search = '';
-
     this.filterUsers();
   }
 
@@ -158,7 +156,6 @@ export class UserGrid implements OnInit {
     this.userService.deleteUser(id).subscribe({
       next: (resp: ApiResponseDTO<void>) => {
         this.findAll();
-
         this.notificationService.success(resp.message);
       },
 
@@ -175,10 +172,7 @@ export class UserGrid implements OnInit {
   updateStats(): void {
     const users = this.users();
 
-    this.totalUsers = users.length;
-
     this.activeUsers = users.filter((user) => user.enabled).length;
-
     this.inactiveUsers = users.filter((user) => !user.enabled).length;
   }
 }
